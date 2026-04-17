@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IDS Studio｜緊急解錠サポート</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; background: linear-gradient(160deg, #0d0d1a 0%, #1a1a3e 60%, #0d1a2e 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+        .container { width: 100%; max-width: 380px; }
+        .logo { text-align: center; margin-bottom: 36px; }
+        .logo-mark { width: 56px; height: 56px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; }
+        .logo h1 { color: #fff; font-size: 22px; font-weight: 300; letter-spacing: 0.4em; text-transform: uppercase; }
+        .logo p { color: rgba(255,255,255,0.4); font-size: 10px; letter-spacing: 0.25em; margin-top: 6px; text-transform: uppercase; }
+        .card { background: rgba(255,255,255,0.06); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 32px 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .step { display: none; animation: fadeIn 0.3s ease; }
+        .step.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .step-title { color: rgba(255,255,255,0.6); font-size: 12px; letter-spacing: 0.2em; text-align: center; text-transform: uppercase; margin-bottom: 22px; }
+        .studio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .studio-btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 22px 12px; cursor: pointer; text-align: center; transition: all 0.2s; color: #fff; }
+        .studio-btn:hover,.studio-btn:active { background: rgba(102,126,234,0.2); border-color: rgba(102,126,234,0.6); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.25); }
+        .studio-btn .icon { font-size: 28px; margin-bottom: 10px; display: block; }
+        .studio-btn .name { font-size: 15px; font-weight: 600; letter-spacing: 0.05em; }
+        .studio-btn .sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: 0.08em; }
+        .notice { text-align: center; color: rgba(255,255,255,0.25); font-size: 11px; line-height: 1.7; letter-spacing: 0.05em; }
+        .studio-badge { display: flex; align-items: center; gap: 10px; background: rgba(102,126,234,0.15); border: 1px solid rgba(102,126,234,0.3); border-radius: 10px; padding: 10px 14px; margin-bottom: 24px; }
+        .studio-badge .dot { width: 8px; height: 8px; background: #667eea; border-radius: 50%; flex-shrink: 0; }
+        .studio-badge span { color: #a5b4fc; font-size: 14px; font-weight: 500; }
+        .pw-label { color: rgba(255,255,255,0.55); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+        .pw-input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; color: #fff; font-size: 20px; letter-spacing: 0.3em; text-align: center; outline: none; margin-bottom: 14px; transition: border-color 0.2s; -webkit-text-security: disc; }
+        .pw-input:focus { border-color: rgba(102,126,234,0.7); }
+        .pw-input.shake { border-color: rgba(252,129,129,0.7) !important; animation: shake 0.35s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-10px)} 40%{transform:translateX(10px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }
+        .btn-primary { width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; padding: 16px; color: #fff; font-size: 15px; font-weight: 600; letter-spacing: 0.12em; cursor: pointer; transition: all 0.2s; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(102,126,234,0.45); }
+        .error-msg { color: #fc8181; font-size: 12px; text-align: center; margin-top: 12px; display: none; letter-spacing: 0.05em; }
+        .btn-back { background: none; border: none; color: rgba(255,255,255,0.3); font-size: 12px; cursor: pointer; margin-top: 18px; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .btn-back:hover { color: rgba(255,255,255,0.6); }
+        .success-header { text-align: center; margin-bottom: 24px; }
+        .success-icon { font-size: 44px; margin-bottom: 8px; }
+        .success-title { color: rgba(255,255,255,0.8); font-size: 14px; letter-spacing: 0.1em; }
+        .pin-box { background: rgba(102,126,234,0.12); border: 2px solid rgba(102,126,234,0.35); border-radius: 18px; padding: 28px 20px; text-align: center; margin-bottom: 10px; }
+        .pin-sublabel { color: rgba(255,255,255,0.35); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 10px; }
+        .pin-number { font-size: 58px; font-weight: 700; letter-spacing: 0.25em; color: #a5b4fc; line-height: 1; font-variant-numeric: tabular-nums; }
+        .pin-note { color: rgba(255,255,255,0.35); font-size: 11px; line-height: 1.7; text-align: center; margin-bottom: 22px; }
+        .btn-reset { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 14px; color: rgba(255,255,255,0.5); font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .btn-reset:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo"><div class="logo-mark">🔐</div><h1>IDS Studio</h1><p>Inohana Dance Studio</p></div>
+    <div class="card">
+        <div class="step active" id="step1">
+            <div class="step-title">ご利用のスタジオを選択</div>
+            <div class="studio-grid">
+                <button class="studio-btn" onclick="selectStudio('A')"><span class="icon">🎵</span><div class="name">A Studio</div><div class="sub">IDS A</div></button>
+                <button class="studio-btn" onclick="selectStudio('B')"><span class="icon">🎶</span><div class="name">B Studio</div><div class="sub">IDS B</div></button>
+            </div>
+            <div class="notice">通常の解錠コードでご入室できない場合に<br>こちらの予備コードをご利用ください</div>
+        </div>
+        <div class="step" id="step2">
+            <div class="studio-badge"><div class="dot"></div><span id="studio-name-badge">IDS A Studio</span></div>
+            <div class="pw-label">パスワードを入力</div>
+            <input type="password" class="pw-input" id="pw-input" placeholder="·  ·  ·" autocomplete="off" onkeydown="if(event.key==='Enter') checkPW()">
+            <button class="btn-primary" onclick="checkPW()">確　認</button>
+            <div class="error-msg" id="err-msg">❌ パスワードが正しくありません</div>
+            <button class="btn-back" onclick="goStep1()">← スタジオを選び直す</button>
+        </div>
+        <div class="step" id="step3">
+            <div class="success-header"><div class="success-icon">🔓</div><div class="success-title">予備解錠コード</div></div>
+            <div class="pin-box"><div class="pin-sublabel">Enter PIN</div><div class="pin-number" id="pin-display">0000</div></div>
+            <div class="pin-note">スタジオ入口のキーパッドに<br>上記の番号を入力してください</div>
+            <button class="btn-reset" onclick="goStep1()">← 最初に戻る</button>
+        </div>
+    </div>
+</div>
+<script>
+    const PW_HASH = btoa('studio');
+    const PINS = { A: '9792', B: '7601' };
+    let studio = null;
+    function selectStudio(s) { studio=s; document.getElementById('studio-name-badge').textContent='IDS '+s+' Studio'; document.getElementById('pw-input').value=''; document.getElementById('err-msg').style.display='none'; show('step2'); setTimeout(()=>document.getElementById('pw-input').focus(),350); }
+    function checkPW() { const val=document.getElementById('pw-input').value; const el=document.getElementById('pw-input'); if(btoa(val)===PW_HASH){document.getElementById('pin-display').textContent=PINS[studio];show('step3');}else{el.classList.add('shake');document.getElementById('err-msg').style.display='block';setTimeout(()=>{el.classList.remove('shake');el.value='';},700);} }
+    function goStep1() { studio=null; document.getElementById('pw-input').value=''; show('step1'); }
+    function show(id) { document.querySelectorAll('.step').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+</script>
+</body>
+</html>
